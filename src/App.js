@@ -1,24 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+
+import Login from './page/Login';
+import AdminDashboard from './page/AdminDashboard';
+import InstructorDashboard from './page/InstructorDashboard';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import InstructorList from "./page/InstructorList";
+import CourseManager from './page/CourseManager';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Toaster position="top-right" />
+
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />}/>
+
+        <Route path="/login" element={<Login />}/>
+
+        <Route path="/admin" element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/admin/instructors" element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <InstructorList />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/instructor" element={
+            <ProtectedRoute
+              allowedRoles={["Instructor"]}
+            >
+              <InstructorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/admin/courses" element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <CourseManager />
+            </ProtectedRoute>
+          }
+        />
+
+      </Routes>
+    </>
   );
 }
 
